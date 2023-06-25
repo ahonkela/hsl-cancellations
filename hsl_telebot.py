@@ -114,9 +114,11 @@ if __name__ == '__main__':
     token = config['telebot']['token']
     chatid = config['telebot']['chatid']
     route = config['hsl']['route']
+    digitransit_api_key = config['hsl']['api_key']
     cache, bot = create_bot(token, chatid)
     # Select your transport with a defined url endpoint
-    transport = AIOHTTPTransport(url="https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql")
+    transport = AIOHTTPTransport(url="https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql",
+                    headers={'digitransit-subscription-key': digitransit_api_key})
     # Create a GraphQL client using the defined transport
     client = Client(transport=transport, fetch_schema_from_transport=True)
 
@@ -134,9 +136,11 @@ if __name__ == '__main__':
         except Exception as e:
             print(datetime.datetime.now())
             print(e)
+            bot.stop()
             cache, bot = create_bot(token, chatid, cache)
             # Select your transport with a defined url endpoint
-            transport = AIOHTTPTransport(url="https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql")
+            transport = AIOHTTPTransport(url="https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql",
+                            headers={'digitransit-subscription-key': digitransit_api_key})
             # Create a GraphQL client using the defined transport
             client = Client(transport=transport, fetch_schema_from_transport=True)
             sleep(60)
